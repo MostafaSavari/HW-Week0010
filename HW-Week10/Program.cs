@@ -14,6 +14,7 @@ UserRepository userRepository = new UserRepository();
 Authentication authentication = new Authentication();
 UserService userService = new UserService();
 
+
 Main();
 
 
@@ -30,19 +31,27 @@ void Main()
         {
             if (dictonary.ContainsKey("username") && dictonary.ContainsKey("password"))
             {
-                var username = dictonary["username"].ToLower();
-                var passwrord = dictonary["password"];
-                var result = authentication.Login(username, passwrord);
-                if (result.IsSuccess)
+                try
                 {
-                    Console.WriteLine("Login Succesfully");
-                    Console.ReadKey();
-                    LoginMenu();
+                    var username = dictonary["username"].ToLower();
+                    var passwrord = dictonary["password"];
+                    var result = authentication.Login(username, passwrord);
+                    if (result.IsSuccess)
+                    {
+                        Console.WriteLine("Login Succesfully");
+                        Console.ReadKey();
+                        LoginMenu();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Username or password is invlaid");
+                        Console.ReadKey();
+                        Main();
+                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    Console.WriteLine("Username or password is invlaid");
-                    Console.ReadKey();
+                    Console.WriteLine(e.Message);
                     Main();
                 }
                
@@ -57,23 +66,32 @@ void Main()
         }
         else if (typeCommand.ToLower() == "register")
         {
-            if (dictonary.ContainsKey("username") && dictonary.ContainsKey("password"))
+            try
             {
-                var username = dictonary["username"].ToLower();
-                var passwrord = dictonary["password"];
-                Users user = new Users(username, passwrord);
-                var result = authentication.Register(user);
-                Console.WriteLine(result.Message);
-                Console.WriteLine("Plase login");
-                Console.ReadKey();
+                if (dictonary.ContainsKey("username") && dictonary.ContainsKey("password"))
+                {
+                    var username = dictonary["username"].ToLower();
+                    var passwrord = dictonary["password"];
+                    Users user = new Users(username, passwrord,StatusEnum.Available.ToString());
+                    var result = authentication.Register(user);
+                    Console.WriteLine(result.Message);
+                    Console.WriteLine("Plase login");
+                    Console.ReadKey();
+                    Main();
+                }
+                else
+                {
+                    Console.WriteLine("Username or password is invlaid");
+                    Console.ReadKey();
+                    Main();
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
                 Main();
             }
-            else
-            {
-                Console.WriteLine("Username or password is invlaid");
-                Console.ReadKey();
-                Main();
-            }
+            
 
         }
     }

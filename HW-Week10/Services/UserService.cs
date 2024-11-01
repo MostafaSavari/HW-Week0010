@@ -63,12 +63,12 @@ namespace HW_Week10.Services
             switch (status.ToLower())
             {
                 case "available":
-                    Storage.CurrentUser.StatusEnum = "Available";
+                    Storage.CurrentUser.StatusEnum = StatusEnum.Available.ToString();
                     _dapperUserRepository.Update(Storage.CurrentUser);
                     return new Result(false, "Status Change to available");
                     break;
                 case "unavailable":
-                    Storage.CurrentUser.StatusEnum = "UnAvailable";
+                    Storage.CurrentUser.StatusEnum = StatusEnum.UnAvailable.ToString();
                     _dapperUserRepository.Update(Storage.CurrentUser);
                     return new Result(false, "Status Change to unavailable");
                     break;

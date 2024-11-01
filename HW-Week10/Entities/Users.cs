@@ -23,6 +23,13 @@ namespace HW_Week10.Entities
             UserName = username;
             Password = password;
         }
+        public Users(string username, string password,string statusEnum)
+        {
+            UserName = username;
+            Password = password;
+            StatusEnum = statusEnum;
+        }
+
 
         public Users()
         {
