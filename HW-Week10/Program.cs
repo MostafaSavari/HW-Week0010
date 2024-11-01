@@ -164,6 +164,10 @@ void LoginMenu()
                     }
                 }
             }
+            else
+            {
+                Console.WriteLine("Not Found User");
+            }
         }
         else
         {
