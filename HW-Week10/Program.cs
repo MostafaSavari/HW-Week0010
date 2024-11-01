@@ -9,21 +9,14 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Linq;
 using HW_Week10.Enums;
 
-Storage.LoadUser();
+//Storage.LoadUser();
 UserRepository userRepository = new UserRepository();
+Authentication authentication = new Authentication();
 UserService userService = new UserService();
 
-//var user = new Users("msavari","Aa@12345")
-//{
-//};
-//userRepository.Add(user);
-
-//string input = "  login --username sara --password 12@34";
-//var comma = input.Split(" ");
-//var result = Command(input);
-//Console.ReadKey();
-
 Main();
+
+
 void Main()
 {
     Console.Clear();
@@ -39,7 +32,7 @@ void Main()
             {
                 var username = dictonary["username"].ToLower();
                 var passwrord = dictonary["password"];
-                var result = userService.Login(username, passwrord);
+                var result = authentication.Login(username, passwrord);
                 if (result.IsSuccess)
                 {
                     Console.WriteLine("Login Succesfully");
@@ -69,7 +62,7 @@ void Main()
                 var username = dictonary["username"].ToLower();
                 var passwrord = dictonary["password"];
                 Users user = new Users(username, passwrord);
-                var result = userService.Register(user);
+                var result = authentication.Register(user);
                 Console.WriteLine(result.Message);
                 Console.WriteLine("Plase login");
                 Console.ReadKey();
@@ -109,7 +102,7 @@ void LoginMenu()
         if (dictonary.ContainsKey("status"))
         {
             var status = dictonary["status"].ToLower();
-            var result = Storage.CurrentUser.ChangeStatus(status);
+            var result = userService.ChangeStatus(status);
             Console.WriteLine(result.Message);
         }
         else
@@ -125,7 +118,7 @@ void LoginMenu()
         {
             var oldPass = dictonary["old"];
             var newPass = dictonary["new"];
-            var result = Storage.CurrentUser.ChangePassword(oldPass, newPass);
+            var result = userService.ChangePassword(oldPass, newPass);
             Console.WriteLine(result.Message);
             
         }
@@ -176,6 +169,7 @@ string GetTypeCommand(Dictionary<string, string> dic)
     reuslt = dic.ElementAt(0).Key;
     return reuslt;
 }
+
 Dictionary<string, string> Command(string input)
 {
     Dictionary<string, string> dictionary = new Dictionary<string, string>();
@@ -197,16 +191,17 @@ Dictionary<string, string> Command(string input)
         }
         else
         {
-            if (i != values.Length -1)
+            if (i != values.Length - 1)
             {
                 dictionary.Add(values[i].ToLower(), values[i].ToLower());
             }
-            if (values.Length ==1)
+
+            if (values.Length == 1)
             {
                 dictionary.Add(values[i].ToLower(), values[i].ToLower());
             }
         }
     }
+
     return dictionary;
 }
-Storage.SaveUser();

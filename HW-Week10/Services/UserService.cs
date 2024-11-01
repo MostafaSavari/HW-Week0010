@@ -8,49 +8,26 @@ using HW_Week10.Data;
 using HW_Week10.Entities;
 using HW_Week10.Enums;
 using HW_Week10.Repositorys;
+using HW_Week10.Repositorys.Dapper;
 
 namespace HW_Week10.Services
 {
-    public class UserService : IUserService
+    public class UserService : DapperUserRepository /*IUserService*/
     {
-        private IUserRepository _userRepository;
+        //private IUserRepository _userRepository;
+        private IDapperUserRepository _dapperUserRepository;
 
         public UserService()
         {
-            _userRepository = new UserRepository();
-        }
-        public Result Login(string username, string password)
-        {
-            foreach (var user in Storage.Users)
-            {
-                if (user.UserName == username && user.Password == password)
-                {
-                    Storage.CurrentUser =user;
-                    return new Result(true, "Login Successfull");
-                }
-            }
-            
-            return new Result(false, "UserName OR Password InCorrect");
-        }
-
-        public Result Register(Users user)
-        {
-            foreach (var u in Storage.Users)
-            {
-                if (u.UserName == user.UserName)
-                {
-                    return new Result(false, "register failed! username already exists.");
-                }
-            }
-            _userRepository.Add(user);
-            Storage.Users.Add(user);
-            return new Result(true, "Register Successfull");
+            //_userRepository = new UserRepository();
+            _dapperUserRepository = new DapperUserRepository();
         }
 
         public List<Users> SearchUsers(string username)
         {
             List<Users> users = new List<Users>();
-            foreach (var user in Storage.Users)
+            List<Users> allusers = _dapperUserRepository.GetAll();
+            foreach (var user in allusers)
             {
                 username = username.ToLower().Replace(" ", "");
                 if (user.UserName.ToLower().StartsWith(username))
@@ -60,7 +37,46 @@ namespace HW_Week10.Services
             }
             return users;
         }
+        public Result ValidatePassword(string pass)
+        {
+            Users user = _dapperUserRepository.Get(Storage.CurrentUser.Id);
+            if (user.Password == pass)
+            {
+                return new Result(true, "Pass");
+            }
+            return new Result(false, "Failed");
+        }
+        public Result ChangePassword(string currentpass, string newpass)
+        {
 
+            if (ValidatePassword(currentpass).IsSuccess)
+            {
+                Storage.CurrentUser.Password = newpass;
+                _dapperUserRepository.Update(Storage.CurrentUser);
+                return new Result(true, "Change Password Success");
+            }
+            return new Result(false, "password incrorrect");
+        }
 
+        public Result ChangeStatus(string status)
+        {
+            switch (status.ToLower())
+            {
+                case "available":
+                    Storage.CurrentUser.StatusEnum = "Available";
+                    _dapperUserRepository.Update(Storage.CurrentUser);
+                    return new Result(false, "Status Change to available");
+                    break;
+                case "unavailable":
+                    Storage.CurrentUser.StatusEnum = "UnAvailable";
+                    _dapperUserRepository.Update(Storage.CurrentUser);
+                    return new Result(false, "Status Change to unavailable");
+                    break;
+                default:
+                    return new Result(false, "Status Input Incorrect");
+                    break;
+            }
+            return new Result(false, "Status Input Incorrect");
+        }
     }
 }

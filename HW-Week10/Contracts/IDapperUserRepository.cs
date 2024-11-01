@@ -1,17 +1,17 @@
-﻿using System;
+﻿using HW_Week10.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using HW_Week10.Entities;
 
 namespace HW_Week10.Contracts
 {
-    public interface IUserRepository
+    public interface IDapperUserRepository
     {
-        public void Add(Users model);
+        public void Create(Users model);
         public Users Get(int id);
         public List<Users> GetAll();
-        public void Update(int id,Users model);
+        public void Update(Users model);
     }
 }
