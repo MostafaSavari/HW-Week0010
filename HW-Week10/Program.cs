@@ -37,10 +37,22 @@ void Main()
         {
             if (dictonary.ContainsKey("username") && dictonary.ContainsKey("password"))
             {
-                var result = userService.Login(dictonary["username"].ToLower(), dictonary["password"]);
-                Console.WriteLine("Login Succesfully");
-                Console.ReadKey();
-                LoginMenu();
+                var username = dictonary["username"].ToLower();
+                var passwrord = dictonary["password"];
+                var result = userService.Login(username, passwrord);
+                if (result.IsSuccess)
+                {
+                    Console.WriteLine("Login Succesfully");
+                    Console.ReadKey();
+                    LoginMenu();
+                }
+                else
+                {
+                    Console.WriteLine("Username or password is invlaid");
+                    Console.ReadKey();
+                    Main();
+                }
+               
             }
             else
             {
@@ -54,7 +66,9 @@ void Main()
         {
             if (dictonary.ContainsKey("username") && dictonary.ContainsKey("password"))
             {
-                Users user = new Users(dictonary["username"], dictonary["password"]);
+                var username = dictonary["username"].ToLower();
+                var passwrord = dictonary["password"];
+                Users user = new Users(username, passwrord);
                 var result = userService.Register(user);
                 Console.WriteLine(result.Message);
                 Console.WriteLine("Plase login");
@@ -94,7 +108,8 @@ void LoginMenu()
     {
         if (dictonary.ContainsKey("status"))
         {
-            var result = Storage.CurrentUser.ChangeStatus(dictonary["status"]);
+            var status = dictonary["status"].ToLower();
+            var result = Storage.CurrentUser.ChangeStatus(status);
             Console.WriteLine(result.Message);
         }
         else
@@ -108,7 +123,9 @@ void LoginMenu()
     {
         if (dictonary.ContainsKey("old") && dictonary.ContainsKey("new"))
         {
-            var result = Storage.CurrentUser.ChangePassword(dictonary["old"], dictonary["new"]);
+            var oldPass = dictonary["old"];
+            var newPass = dictonary["new"];
+            var result = Storage.CurrentUser.ChangePassword(oldPass, newPass);
             Console.WriteLine(result.Message);
             
         }
@@ -124,7 +141,8 @@ void LoginMenu()
     {
         if (dictonary.ContainsKey("username"))
         {
-            var users = userService.SearchUsers(dictonary["username"].ToLower());
+            var username = dictonary["username"].ToLower();
+            var users = userService.SearchUsers(username);
             if (users.Count > 0)
             {
                 foreach (var user in users)
@@ -180,6 +198,10 @@ Dictionary<string, string> Command(string input)
         else
         {
             if (i != values.Length -1)
+            {
+                dictionary.Add(values[i].ToLower(), values[i].ToLower());
+            }
+            if (values.Length ==1)
             {
                 dictionary.Add(values[i].ToLower(), values[i].ToLower());
             }
